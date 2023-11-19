@@ -1,12 +1,20 @@
 package com.example.demo.cuenta;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 
+@Service
 public class CuentaService {
-    public List<Cuenta> getCuentas() {
-        return List.of(
-                new Cuenta(1L, "Andres", 100L),
-                new Cuenta(2L, "John", 50L)
-        );
+    private final CuentaRepository cuentaRepository;
+
+    @Autowired
+    public CuentaService(CuentaRepository cuentaRepository) {
+        this.cuentaRepository = cuentaRepository;
+    }
+
+    public void addNewCuenta(Cuenta cuenta) {
+        cuentaRepository.save(cuenta);
     }
 }

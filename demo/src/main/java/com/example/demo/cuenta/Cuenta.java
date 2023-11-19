@@ -1,24 +1,38 @@
 package com.example.demo.cuenta;
 
 import com.example.demo.cdt.Cdt;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
+
+import java.util.List;
 
 @Entity
 @Table(name = "cuenta")
 public class Cuenta {
+    @Id
+    @SequenceGenerator(
+            name = "cuenta_sequence",
+            sequenceName = "cuenta_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy= GenerationType.SEQUENCE,
+            generator = "cuenta_sequence"
+    )
     private Long id;
+    @NotBlank(message = "El propietario debe tener un nombre")
     private String propietario;
+    @Positive(message = "El saldo debe ser positivo")
     private Long saldo;
+    @Column(columnDefinition = "boolean default true")
+    private boolean activo;
 
     @OneToMany(mappedBy = "cuenta")
-    private Cdt cdt;
+    private List<Cdt> cdts;
 
-    public Cuenta(Long id, String propietario, Long saldo) {
-        this.id = id;
-        this.propietario = propietario;
-        this.saldo = saldo;
+    public Cuenta() {
     }
 
     public Cuenta(String propietario, Long saldo) {
@@ -48,6 +62,22 @@ public class Cuenta {
 
     public void setSaldo(Long saldo) {
         this.saldo = saldo;
+    }
+
+    public List<Cdt> getCdts() {
+        return cdts;
+    }
+
+    public void setCdts(List<Cdt> cdts) {
+        this.cdts = cdts;
+    }
+
+    public boolean isActivo() {
+        return activo;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
     }
 
     @Override
