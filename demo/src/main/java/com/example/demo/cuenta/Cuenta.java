@@ -2,9 +2,8 @@ package com.example.demo.cuenta;
 
 import com.example.demo.cdt.Cdt;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 
 import java.util.List;
 
@@ -24,10 +23,10 @@ public class Cuenta {
     private Long id;
     @NotBlank(message = "El propietario debe tener un nombre")
     private String propietario;
-    @Positive(message = "El saldo debe ser positivo")
+    @PositiveOrZero(message = "El saldo debe ser positivo")
     private Long saldo;
     @Column(columnDefinition = "boolean default true")
-    private boolean activo;
+    private boolean activo = true;
 
     @OneToMany(mappedBy = "cuenta")
     private List<Cdt> cdts;
@@ -87,5 +86,16 @@ public class Cuenta {
                 ", propietario='" + propietario + '\'' +
                 ", saldo=" + saldo +
                 '}';
+    }
+
+    public boolean canTransfer(Long amount){
+        return amount > 0 & amount <= this.saldo;
+    }
+
+    public void deposit(Long amount){
+        this.saldo += amount;
+    }
+    public void withdraw(Long amount){
+        this.saldo -= amount;
     }
 }
