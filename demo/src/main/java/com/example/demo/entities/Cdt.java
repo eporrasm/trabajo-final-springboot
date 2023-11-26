@@ -1,7 +1,6 @@
-package com.example.demo.cdt;
+package com.example.demo.entities;
 
 
-import com.example.demo.cuenta.Cuenta;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 
@@ -22,14 +21,18 @@ public class Cdt {
     private Long id;
     @Min(value = 500000, message = "El valor mínimo es de 500.000 COP")
     private Long valor;
+
+    @Min(value = 3, message = "El plazo mínimo es de 3 meses")
     private int plazo;
     @Column(columnDefinition = "boolean default true")
-    private boolean activo;
-    @ManyToOne
-    @JoinColumn(name = "cuenta_id")
+    private boolean activo = true;
+    @ManyToOne//(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "cuenta_id", referencedColumnName = "id")
     private Cuenta cuenta;
     @Transient
     private Long ganancia;
+    @Transient
+    private Long impuesto;
 
     public Cdt() {
     }
@@ -39,6 +42,11 @@ public class Cdt {
         this.plazo = plazo;
         this.cuenta = cuenta;
         this.ganancia = ganancia;
+    }
+    public Cdt(Long valor, int plazo, Cuenta cuenta) {
+        this.valor = valor;
+        this.plazo = plazo;
+        this.cuenta = cuenta;
     }
 
     public Long getId() {
@@ -102,6 +110,14 @@ public class Cdt {
         this.ganancia = ganancia;
     }
 
+    public Long getImpuesto() {
+        return (long) (getGanancia() * 0.04);
+    }
+
+    public void setImpuesto(Long impuesto) {
+        this.impuesto = impuesto;
+    }
+
     @Override
     public String toString() {
         return "Cdt{" +
@@ -109,6 +125,7 @@ public class Cdt {
                 ", valor=" + valor +
                 ", plazo=" + plazo +
                 ", activo=" + activo +
+                ", ganancia=" + getGanancia() +
                 '}';
     }
 }

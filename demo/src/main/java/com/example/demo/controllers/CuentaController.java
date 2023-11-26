@@ -1,5 +1,7 @@
-package com.example.demo.cuenta;
+package com.example.demo.controllers;
 
+import com.example.demo.entities.Cuenta;
+import com.example.demo.services.CuentaService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
@@ -32,7 +34,7 @@ public class CuentaController {
         Optional<Cuenta> cuentaOptional = cuentaService.findById(id);
 
         if (cuentaOptional.isEmpty())
-            return new ResponseEntity<>("La cuenta con id: " + id + " no existe.", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("La cuenta con id: " + id + " no existe o fue eliminada.", HttpStatus.NOT_FOUND);
 
         return new ResponseEntity<>(cuentaOptional.get(), HttpStatus.OK);
     }
@@ -48,10 +50,10 @@ public class CuentaController {
         Optional<Cuenta> receiverOptional = cuentaService.findById(receiverId);
 
         if (senderOptional.isEmpty()) {
-            return ResponseEntity.badRequest().body("La cuenta con id: " + senderId + " no existe.");
+            return ResponseEntity.badRequest().body("La cuenta con id: " + senderId + " no existe o fue eliminada.");
         }
         if (receiverOptional.isEmpty()) {
-            return ResponseEntity.badRequest().body("La cuenta con id: " + receiverId + " no existe.");
+            return ResponseEntity.badRequest().body("La cuenta con id: " + receiverId + " no existe o fue eliminada.");
         }
         Cuenta senderCuenta = senderOptional.get();
         Cuenta receiverCuenta = receiverOptional.get();

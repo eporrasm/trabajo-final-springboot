@@ -1,9 +1,10 @@
-package com.example.demo.cuenta;
+package com.example.demo.services;
 
+import com.example.demo.entities.Cuenta;
+import com.example.demo.repositories.CuentaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service

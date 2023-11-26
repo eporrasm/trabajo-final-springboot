@@ -1,6 +1,7 @@
-package com.example.demo.cuenta;
+package com.example.demo.entities;
 
-import com.example.demo.cdt.Cdt;
+import com.example.demo.DTOs.CdtDTO;
+import com.example.demo.entities.Cdt;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -63,8 +64,9 @@ public class Cuenta {
         this.saldo = saldo;
     }
 
-    public List<Cdt> getCdts() {
-        return cdts;
+    public List<CdtDTO> getCdts() {
+        // Solo devuelve los cdts ACTIVOS como DTOs para evitar que se muestren los inactivos
+        return cdts.stream().filter(Cdt::isActivo).map(CdtDTO::CdtToDTO).toList();
     }
 
     public void setCdts(List<Cdt> cdts) {
