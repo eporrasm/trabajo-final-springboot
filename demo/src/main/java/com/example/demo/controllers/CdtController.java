@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.IllegalTransactionStateException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -20,7 +21,7 @@ public class CdtController {
     public CdtController(CdtService cdtService) {this.cdtService = cdtService;}
 
 
-    @PostMapping//("/{id}/")
+    @PostMapping
     public ResponseEntity<String> createNewCdt(@Valid @RequestBody Cdt cdt) { //@PathVariable("id") Long id
         try {
             cdtService.createNewCdt(cdt);
@@ -28,6 +29,24 @@ public class CdtController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
         return ResponseEntity.ok("Cdt creado");
+    }
+
+    @PostMapping("/simular")
+    public ResponseEntity<?> simulateCdt(@RequestBody Cdt cdt) {
+        try {
+            cdtService.simulateNewCdt(cdt);
+        } catch (IllegalTransactionStateException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
+        Map<String, Object> body = Map.of(
+                "plazo", cdt.getPlazo(),
+                "ganancia", cdt.getGanancia(),
+                "impuesto", cdt.getImpuesto(),
+                "taza", cdt.getTaza()
+        );
+
+        return ResponseEntity.ok(body);
     }
 
     @GetMapping("/{id}")

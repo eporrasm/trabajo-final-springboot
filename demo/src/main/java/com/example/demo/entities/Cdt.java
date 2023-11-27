@@ -118,6 +118,20 @@ public class Cdt {
         this.impuesto = impuesto;
     }
 
+    public String getTaza() {
+        String taza = "";
+        if (this.plazo == 3) {
+            taza = 6.3f + "%";
+        } else if (this.plazo == 6) {
+            taza = 8.5f + "%";
+        } else if (this.plazo == 9) {
+            taza = 11.3f + "%";
+        } else if (this.plazo == 12) {
+            taza = 14.9f + "%";
+        }
+        return taza;
+    }
+
     @Override
     public String toString() {
         return "Cdt{" +

@@ -25,23 +25,38 @@ public class CdtService {
     }
 
     public void createNewCdt(Cdt cdt) {
-        Optional<Cuenta> cuentaOptional = cuentaRepository.findById(cdt.getCuenta().getId());
 
         if (!CdtDTO.plazosValidos.contains(cdt.getPlazo())){
             throw new IllegalTransactionStateException("El plazo sólo puede ser 3, 6, 9 ó 12 meses.");
         }
 
-        if (cuentaOptional.isPresent()) {
-            Cuenta cuenta = cuentaOptional.get();
+        if (cuentaExists(cdt)) {
+            Cuenta cuenta = cuentaRepository.getReferenceById(cdt.getCuenta().getId());
             if (cuenta.getSaldo() - cdt.getValor() < 0) {
-                throw new IllegalTransactionStateException("No hay saldo suficiente para crear el CDT");
+                throw new IllegalTransactionStateException("No hay saldo suficiente para crear el CDT.");
             }
             cuenta.withdraw(cdt.getValor());
             cuentaRepository.save(cuenta);
             cdtRepository.save(cdt);
         }
         else{
-            throw new IllegalTransactionStateException("La cuenta no existe");
+            throw new IllegalTransactionStateException("La cuenta no existe.");
+        }
+
+    }
+
+    public void simulateNewCdt(Cdt cdt) {
+
+        if (!CdtDTO.plazosValidos.contains(cdt.getPlazo())){
+            throw new IllegalTransactionStateException("El plazo sólo puede ser 3, 6, 9 ó 12 meses.");
+        }
+
+        if (!cuentaExists(cdt)) {
+            throw new IllegalTransactionStateException("La cuenta no existe.");
+        }
+
+        if (cdt.getValor() < 500000) {
+            throw new IllegalTransactionStateException("El valor mínimo de un CDT es de 500000.");
         }
 
     }
@@ -63,6 +78,11 @@ public class CdtService {
     public void deleteCdt(Cdt cdt) {
             cdt.setActivo(false);
             cdtRepository.save(cdt);
+    }
+
+    private boolean cuentaExists(Cdt cdt) {
+        Long id = cdt.getCuenta().getId();
+        return cuentaRepository.findById(id).isPresent();
     }
 
 }
