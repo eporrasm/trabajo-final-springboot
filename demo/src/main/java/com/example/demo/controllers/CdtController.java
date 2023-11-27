@@ -43,6 +43,7 @@ public class CdtController {
                 "plazo", cdt.getPlazo(),
                 "ganancia", cdt.getGanancia(),
                 "impuesto", cdt.getImpuesto(),
+                "ganancia_neta", cdt.getGanancia() - cdt.getImpuesto(),
                 "taza", cdt.getTaza()
         );
 
